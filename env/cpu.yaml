@@ -1,0 +1,46 @@
+{
+  "spack": {
+    "concretizer": {
+      "reuse": false,
+      "targets": {
+        "granularity": "generic",
+        "host_compatible": false
+      },
+      "unify": true
+    },
+    "config": {
+      "build_jobs": 2,
+      "install_tree": {
+        "root": "/opt/install"
+      }
+    },
+    "packages": {
+      "all": {
+        "providers": {
+          "blas": [
+            "openblas"
+          ],
+          "lapack": [
+            "openblas"
+          ],
+          "mpi": [
+            "openmpi"
+          ]
+        },
+        "target": [
+          "x86_64"
+        ]
+      },
+      "openblas": {
+        "require": "threads=none"
+      },
+      "openmpi": {
+        "require": "fabrics=none schedulers=none"
+      }
+    },
+    "specs": [
+      "palace@0.18.1+superlu-dist+slepc+openmp~strumpack~mumps~rocm ~cuda"
+    ],
+    "view": "/opt/view"
+  }
+}

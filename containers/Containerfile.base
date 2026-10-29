@@ -1,0 +1,20 @@
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
+ARG APT_SNAPSHOT=20261027T000000Z
+ENV DEBIAN_FRONTEND=noninteractive
+COPY assets/cacert.pem /etc/ssl/certs/ca-certificates.crt
+RUN printf 'APT::Snapshot "%s";\n' "${APT_SNAPSHOT}" > /etc/apt/apt.conf.d/50snapshot
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential gfortran git curl ca-certificates python3 python3-venv \
+    python3-pip python3-yaml unzip bzip2 xz-utils file patch pkg-config \
+    libssl-dev zlib1g-dev libffi-dev patchelf && rm -rf /var/lib/apt/lists/*
+COPY assets/spack.tar.gz assets/spack-packages.tar.gz assets/palace.tar.gz /tmp/assets/
+RUN mkdir -p /opt/spack /opt/spack-packages /opt/palace && \
+    tar xzf /tmp/assets/spack.tar.gz -C /opt/spack --strip-components=1 && \
+    tar xzf /tmp/assets/spack-packages.tar.gz -C /opt/spack-packages --strip-components=1 && \
+    tar xzf /tmp/assets/palace.tar.gz -C /opt/palace --strip-components=1 && rm -rf /tmp/assets
+ENV PATH=/opt/view/bin:/opt/spack/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+ENV SPACK_USER_CONFIG_PATH=/opt/spack-config
+RUN spack repo add /opt/spack-packages/repos/spack_repo/builtin && spack compiler find
+COPY install-solver.sh install-tools.sh /opt/
+ENTRYPOINT ["/bin/bash"]

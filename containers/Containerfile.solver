@@ -1,0 +1,19 @@
+# Context: .cache/build-input/cpu or .cache/build-input/cuda-ARCH-VERSION.
+# BASE_IMAGE is the pinned builder image produced by pcb-em build.
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
+ARG BUILD_JOBS=2
+ARG CUDA_ARCH=75
+ARG SOLVER_MEMORY=host
+ARG SOLVER_PRELOAD=
+ENV BUILD_JOBS=${BUILD_JOBS}
+ENV CUDA_ARCH=${CUDA_ARCH}
+COPY . /input/
+RUN /bin/bash /opt/install-solver.sh
+# For a CUDA context, pass SOLVER_MEMORY=cuda and
+# SOLVER_PRELOAD=/usr/local/lib/pcb-em-cuda-runtime.so.
+# pcb-em build applies these automatically when committing its CUDA image.
+ENV MFEM_MEMORY=${SOLVER_MEMORY}
+ENV LD_PRELOAD=${SOLVER_PRELOAD}
+ENTRYPOINT []
+CMD ["palace", "--help"]

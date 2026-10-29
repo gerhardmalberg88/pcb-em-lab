@@ -1,0 +1,6 @@
+# Keep the current pinned OS/Spack base; copy only the immutable Spack store.
+ARG CACHE_IMAGE
+ARG BASE_IMAGE
+FROM ${CACHE_IMAGE} AS cache
+FROM ${BASE_IMAGE}
+COPY --from=cache /opt/install /opt/install

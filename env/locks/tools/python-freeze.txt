@@ -1,0 +1,20 @@
+contourpy==1.3.3
+cycler==0.12.1
+fonttools==4.68.0
+kiwisolver==1.5.1
+matplotlib==3.10.7
+numpy @ file:///tmp/root/spack-stage/spack-stage-py-numpy-2.4.6-dy45ibegwcedtt4xandy46ggogfwirhq/spack-src
+packaging==26.3
+pandas==2.3.3
+pillow==13.0.0
+pybind11 @ file:///tmp/root/spack-stage/spack-stage-py-pybind11-3.1.0-vyyiqvpzjzomkg4ocyn54ghmnfctpkgp/spack-src
+pyparsing==3.3.3
+python-dateutil==3.0.0
+pytz==2026.5
+PyYAML @ file:///tmp/root/spack-stage/spack-stage-py-pyyaml-6.0.3-hastu42oanyb5vhyziphza7jui7qjgdj/spack-src
+scikit-rf==1.8.0
+scipy @ file:///tmp/root/spack-stage/spack-stage-py-scipy-1.17.1-3uj4abhwiydbvd62conrttyiyh6kkdnm/spack-src
+shapely @ file:///tmp/root/spack-stage/spack-stage-py-shapely-2.2.0-ksxptldr7yz7atyko2n6mmvp7yisbciy/spack-src
+six==1.17.0
+typing_extensions==4.15.0
+tzdata==2026.5

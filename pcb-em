@@ -1,0 +1,7 @@
+#!/usr/bin/env python3
+"""Run directly from a checkout, without installing into the host Python."""
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent / "src"))
+from pcb_em.cli import main
+raise SystemExit(main())

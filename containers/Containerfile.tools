@@ -1,0 +1,9 @@
+# Context: .cache/build-input/tools (contains pins, Spack input and asset installer).
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
+ARG BUILD_JOBS=2
+ENV BUILD_JOBS=${BUILD_JOBS}
+COPY . /input/
+RUN /bin/bash /opt/install-tools.sh
+ENTRYPOINT []
+CMD ["kicad-cli", "version"]

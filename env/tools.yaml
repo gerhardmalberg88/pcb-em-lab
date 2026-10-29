@@ -1,0 +1,59 @@
+{
+  "spack": {
+    "concretizer": {
+      "reuse": false,
+      "targets": {
+        "granularity": "generic",
+        "host_compatible": false
+      },
+      "unify": true
+    },
+    "config": {
+      "build_jobs": 2,
+      "install_tree": {
+        "root": "/opt/install"
+      }
+    },
+    "packages": {
+      "all": {
+        "providers": {
+          "blas": [
+            "openblas"
+          ],
+          "lapack": [
+            "openblas"
+          ],
+          "mpi": [
+            "openmpi"
+          ]
+        },
+        "target": [
+          "x86_64"
+        ]
+      },
+      "fltk": {
+        "require": "@1.3.7"
+      },
+      "mesa": {
+        "require": "~llvm"
+      },
+      "openblas": {
+        "require": "threads=none"
+      },
+      "openmpi": {
+        "require": "fabrics=none schedulers=none"
+      }
+    },
+    "specs": [
+      "gmsh@4.15.2+opencascade+fltk+shared~mpi~petsc~slepc~med~cgns~mmg",
+      "ngspice@46 build=bin +xspice+osdi~X~openmp",
+      "python@3.11",
+      "py-pip",
+      "py-numpy",
+      "py-scipy",
+      "py-shapely",
+      "py-pyyaml"
+    ],
+    "view": "/opt/view"
+  }
+}

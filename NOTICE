@@ -1,0 +1,16 @@
+PCB EM Lab
+Copyright 2026 Gerhard Malberg
+
+The original software, build recipes, configuration and documentation in this
+repository are provided under the Apache License, Version 2.0. The unmodified
+license text is supplied in LICENSE.
+
+Third-party software, upstream reference examples and downloaded source archives
+retain their respective copyright notices and licenses. This repository's license
+does not relicense the programs installed into its container images. Upstream
+sources and versions are recorded in env/pins.json and env/locks/.
+
+The separate bms-cmu-bq79616-hardware repository and its original hardware design
+and case inputs remain under CERN-OHL-P-2.0, subject to their own third-party
+notices. Running this workflow does not change the license of input designs or
+incorporated third-party material.
