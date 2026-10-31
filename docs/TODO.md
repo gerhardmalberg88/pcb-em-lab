@@ -34,8 +34,6 @@ ignored by Git and remains on this machine.
   after a solver/model failure.
 - Preserve original design files, unrelated working-tree changes, build caches,
   logs and provenance. Keep the working graphics driver.
-- Thermal work remains documentation/placeholders and a Mermaid workflow.
-  Installing Elmer or implementing thermal solvers is outside this EM plan.
 - No expansion into cables/external assemblies, saturation, hysteresis,
   distributed MPI, or component qualification.
 
@@ -51,8 +49,8 @@ ignored by Git and remains on this machine.
   hardware repository retains CERN-OHL-P-2.0. No Git actions were performed.
 - [x] Keep BMS physical cases in the hardware repository.
 - [x] Remove both workflow XMLs from the repository and replace their links.
-- [x] Put simplified EM and thermal Mermaid diagrams in the workflow root README.
-- [x] Document EM case directories and the thermal balancing-resistor placeholder.
+- [x] Put a simplified EM Mermaid diagram in the workflow root README.
+- [x] Document EM case directories.
 - [x] Document configuration, GUI use, server transfer and observed validation.
 - [x] Preserve the pre-existing modified KiCad project file; all 14 saved design
   hashes still match the starting workspace.

@@ -103,33 +103,6 @@ hashes and tool image IDs. Mechanical parts remain separate; they do not replace
 the PCB copper. Inspect integer boundary tags and port polarity before drawing
 physical conclusions. A 2D mode index alone does not identify the differential mode.
 
-## Thermal workflow
-
-This preserves the supplied thermal workflow as a future integration path.
-Elmer is **not installed by the EM profiles**, and balancing-resistor cases remain
-documentation placeholders in the BMS repository.
-
-```mermaid
-flowchart TD
-  C[Case YAML + stage driver] -.-> K[KiCad CLI / GUI]
-  C -.-> G[Gmsh Python / GUI]
-  C -.-> E[ElmerSolver: authoritative case.sif]
-  K -->|board.step, inner copper, resistor positions| G
-  F[FreeCAD: heatsink, pad, enclosure, standoffs] -.->|separate mechanical STEP files| G
-  G -->|crop / hybrid slab, shared faces, physical tags; board.msh| EG[ElmerGrid]
-  EG -->|converted mesh| E
-  EG --> GUI[ElmerGUI: same case.sif]
-  E -->|ResultOutputSolve: VTU| P[ParaView: temperature, hotspots, sections]
-  P -->|view.pvsm| R[pvpython: repeatable PNG rendering]
-```
-
-Keep all copper in the thermal region. Record verified resistor losses,
-balancing schedules, ambient, convection, contact resistance and material data.
-The supplied 2–3 thermal-length crop margin is a starting estimate; check domain
-sensitivity and heat balance. A hybrid model uses explicit local copper and a
-homogenized orthotropic board outside. Keep mechanical STEPs in board coordinates
-and regenerate board exports after layout changes.
-
 ## Execution and results
 
 ```yaml
