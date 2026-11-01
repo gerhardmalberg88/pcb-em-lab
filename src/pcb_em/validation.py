@@ -35,7 +35,7 @@ def doctor(backend='cpu',full=False):
         for label,command in [
             ('KiCad CLI',['kicad-cli','version']),
             ('KiCad Python',['/usr/bin/python3','-c','import pcbnew; print(pcbnew.GetBuildVersion())']),
-            ('Gmsh and numerical Python',['pcb-python','-c','import gmsh,skrf,numpy,scipy,shapely,yaml; gmsh.initialize(); print(gmsh.option.getString("General.Version")); gmsh.finalize()']),
+            ('Gmsh and numerical Python',['pcb-python','-c','import gmsh,skrf,numpy,scipy,shapely; gmsh.initialize(); print(gmsh.option.getString("General.Version")); gmsh.finalize()']),
             ('ngspice',['ngspice','--version']),('OpenVAF',['openvaf','--version']),
             ('QucsatorRF',['qucsator_rf','--version']),
             ('FreeCAD Python',['freecadcmd','/workflow/scripts/check-freecad.py']),

@@ -12,9 +12,9 @@ not establish impedance acceptance, EMC compliance or component qualification.
 ## Quick start
 
 Use an x86-64 Linux machine with Python 3 and rootless Podman. CPU operation has
-no NVIDIA requirement. The launcher works directly from this checkout; JSON is
-also accepted in `.yaml` case files, so the supplied cases need no host Python packages.
-For handwritten YAML install your distribution's `python3-yaml` package.
+no NVIDIA requirement. The launcher works directly from this checkout. Case
+files use JSON and are read with Python's standard library; no host Python
+packages are required.
 
 ```bash
 git clone https://github.com/gerhardmalberg88/pcb-em-lab.git
@@ -22,9 +22,9 @@ cd pcb-em-lab
 ./pcb-em bootstrap
 ./pcb-em build --profile cpu --jobs 2
 ./pcb-em doctor --backend cpu --full
-./pcb-em run examples/differential-pair/case.yaml --backend cpu
+./pcb-em run examples/differential-pair/case.json --backend cpu
 # Optional small 3D case: two-port network, fields and circuit handoffs
-./pcb-em run examples/differential-pair/driven.yaml --backend cpu
+./pcb-em run examples/differential-pair/driven.json --backend cpu
 ```
 
 The example guide includes GUI commands for its PCB, STEP export, constructed
@@ -41,7 +41,7 @@ virtual environment (requires your distribution's `python3-venv`,
 python3 -m venv --system-site-packages .venv
 . .venv/bin/activate
 python -m pip install --no-build-isolation -e .
-pcb-em run "$PWD/examples/differential-pair/case.yaml" --backend cpu
+pcb-em run "$PWD/examples/differential-pair/case.json" --backend cpu
 ```
 
 CUDA is optional. Install the container integration after confirming that the
@@ -53,7 +53,7 @@ solver checks run afterward through `doctor` in the GPU-enabled runtime.
 ./pcb-em bootstrap --cuda
 ./pcb-em build --profile cuda --cuda-arch 75 --cuda-version 12.9.1
 ./pcb-em doctor --backend cuda --full
-./pcb-em run examples/differential-pair/case.yaml --backend cuda --mpi-ranks 1
+./pcb-em run examples/differential-pair/case.json --backend cuda --mpi-ranks 1
 ./pcb-em build --profile all --cuda-arch 75
 ```
 
@@ -61,7 +61,10 @@ solver checks run afterward through `doctor` in the GPU-enabled runtime.
 `all` builds CPU, tools and CUDA. Two build jobs are the default. Failed build
 containers, downloads and logs are retained to diagnose and resume failures.
 An initial source build can take several hours on a laptop; subsequent builds
-reuse matching images and compiled dependencies. See the
+reuse matching images and compiled dependencies. Maintained environment manifests use
+JSON (`env/*.json` and `env/locks/*/spack.json`). Inside build containers the
+installer copies that JSON to Spack's required `spack.yaml` filename; it exports
+the original JSON manifest and the resolved `spack.lock`. See the
 [storage and transfer notes](docs/servers.md) before building or exporting all profiles.
 Completed builders are removed after their image and provenance are saved;
 the image retains the compiled package cache. Images are
@@ -98,7 +101,7 @@ Eigenmode remain documented extension paths, outside the initial case generator.
 
 ```mermaid
 flowchart TD
-  C[Case YAML + pcb-em] -.-> K[KiCad CLI + pcbnew]
+  C[Case JSON + pcb-em] -.-> K[KiCad CLI + pcbnew]
   C -.-> G[Gmsh Python + GUI]
   C -.-> P[Palace: case.json, L0 = 0.001]
   K -->|polygons, stackup, holes, placements, transforms| G
@@ -126,15 +129,20 @@ physical conclusions. A 2D mode index alone does not identify the differential m
 
 ## Execution and results
 
-```yaml
-execution:
-  backend: auto          # auto | cpu | cuda
-  mpi_ranks: 2           # optional; omit for 2 CPU / 1 GPU rank defaults
-  threads_per_rank: 1
-  gpu_count: 1
+```json
+{
+  "execution": {
+    "backend": "auto",
+    "mpi_ranks": 2,
+    "threads_per_rank": 1,
+    "gpu_count": 1
+  }
+}
 ```
 
-CLI options override these preferences. Explicit CPU selection never probes
+`backend` accepts `auto`, `cpu` or `cuda`. Omit `mpi_ranks` for the defaults
+of two CPU ranks or one GPU rank. CLI options override these preferences.
+Explicit CPU selection never probes
 NVIDIA. Auto selection checks the CUDA image and container device access, then
 reports either CUDA selection or its reason for choosing CPU. Explicit CUDA
 fails if unavailable. Solver or model failures stop the run; they never change
@@ -142,9 +150,9 @@ the backend. An explicitly configured MPI rank count is honored; for CUDA it
 must not exceed `gpu_count`.
 
 ```bash
-./pcb-em run CASE.yaml --mode 2d --backend cpu --stage all
-./pcb-em run CASE.yaml --backend auto --stage mesh
-./pcb-em run CASE.yaml --backend cpu --mpi-ranks 2 --threads-per-rank 1
+./pcb-em run CASE.json --mode 2d --backend cpu --stage all
+./pcb-em run CASE.json --backend auto --stage mesh
+./pcb-em run CASE.json --backend cpu --mpi-ranks 2 --threads-per-rank 1
 ```
 
 Stages are `extract`, `mesh`, `solve`, `postprocess`, `all`. Selecting a stage also

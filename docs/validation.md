@@ -3,6 +3,33 @@
 Observed validation, most recently 2026-11-01. This file records observed checks, not intended
 capabilities. Update it after each completed build and numerical check.
 
+## JSON configuration migration, 2026-11-01
+
+All eight maintained environment/example manifests now use `.json`; their
+contents and SHA-256 hashes are unchanged. Case parsing uses the standard
+library and rejects YAML syntax. Documentation and VS Code tasks use the new
+paths. Spack's required `spack.yaml` is generated from the JSON manifest only
+inside build containers; JSON manifests and existing JSON locks remain the
+maintained build inputs.
+
+- All 37 lab tests pass, including parsing without site packages and invalid
+  JSON/object rejection. The related hardware suite passes 15 tests.
+- The standalone 2D and 3D CPU pipelines complete through postprocessing.
+  The 2D CUDA run uses an identical mesh; its differential-candidate L/C/Z
+  values differ from CPU by at most 8.53e-9 relative. This is backend agreement
+  on the teaching model, not mesh or physical-model qualification.
+- Installed Spack accepts the renamed CPU manifest with its existing lock
+  (75 resolved packages). Editable installation succeeds offline. A full
+  source-image rebuild was not repeated for this migration.
+- NVIDIA tooling generates and reads a temporary JSON CDI spec (three device
+  aliases). Bootstrap scripts now configure JSON output and preserve backups
+  of old generated specs. Existing host GPU configuration was not changed.
+
+Historical native run records, upstream source caches and package inventories
+retain their original contents. Six published hardware case references now
+resolve to byte-identical JSON inputs; saved source/native/published artifact
+hashes pass verification. BMS simulations were not rerun for this migration.
+
 ## COMH/COML board-only study, 2026-11-01
 
 The BMS scope is now exclusively U201 COMH/COML to J501/J502 contact heads,

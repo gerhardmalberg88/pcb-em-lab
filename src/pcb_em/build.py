@@ -108,12 +108,13 @@ def build(profile, arch="75", cuda_version="12.9.1", jobs=2):
         exported.mkdir(parents=True, exist_ok=True)
         inputs = CACHE / "build-input" / lock_name
         inputs.mkdir(parents=True, exist_ok=True)
-        write_json(inputs / "spack.yaml", data)
-        write_json(ROOT / "env" / f"{kind}.yaml", data)
+        write_json(inputs / "spack.json", data)
+        (inputs / "spack.yaml").unlink(missing_ok=True)
+        write_json(ROOT / "env" / f"{kind}.json", data)
         # Never apply an old lock to a changed environment.
-        old_yaml = exported / "spack.yaml"
+        old_manifest = exported / "spack.json"
         from .common import read_config
-        if old_yaml.exists() and read_config(old_yaml) == data and (exported / "spack.lock").exists():
+        if old_manifest.exists() and read_config(old_manifest) == data and (exported / "spack.lock").exists():
             shutil.copy2(exported / "spack.lock", inputs / "spack.lock")
         else:
             (inputs / "spack.lock").unlink(missing_ok=True)

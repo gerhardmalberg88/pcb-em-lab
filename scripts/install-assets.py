@@ -101,7 +101,7 @@ gmsh_prefix=Path(subprocess.check_output(['spack','-e','/opt/environment',
 gmsh_modules=list(gmsh_prefix.rglob('gmsh.py'))
 if not gmsh_modules:raise RuntimeError('Gmsh Python API missing')
 wrapper('pcb-python',f'export PYTHONPATH="{gmsh_modules[0].parent}:/workflow/src:${{PYTHONPATH:-}}"\nexec /opt/python/bin/python "$@"')
-subprocess.run(['pcb-python','-c','import gmsh, numpy, scipy, shapely, yaml, skrf'],check=True)
+subprocess.run(['pcb-python','-c','import gmsh, numpy, scipy, shapely, skrf'],check=True)
 subprocess.run(['pcb-python','-c',
     'from pathlib import Path; import numpy, scipy, shapely; '
     'assert all(Path(m.__file__).resolve().is_relative_to("/opt/install") '

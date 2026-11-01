@@ -1,10 +1,11 @@
 #!/bin/bash
 set -euo pipefail
-if [ -f /opt/environment/spack.yaml ] && ! cmp -s /input/spack.yaml /opt/environment/spack.yaml; then
+# Spack requires this native filename; the maintained manifest is JSON.
+if [ -f /opt/environment/spack.yaml ] && ! cmp -s /input/spack.json /opt/environment/spack.yaml; then
     rm -rf /opt/environment
 fi
 mkdir -p /opt/environment /export
-cp /input/spack.yaml /opt/environment/spack.yaml
+cp /input/spack.json /opt/environment/spack.yaml
 if [ -f /input/spack.lock ] && [ ! -f /opt/environment/spack.lock ]; then
     cp /input/spack.lock /opt/environment/spack.lock
 fi
@@ -30,7 +31,7 @@ cp /opt/environment/spack.lock /export/spack.lock
 NOCONFIGURE=1 spack -e /opt/environment install -j "${BUILD_JOBS:-2}" --fail-fast
 /usr/bin/python3 /input/install-assets.py /input/pins.json
 spack -e /opt/environment find --json > /export/packages.json
-cp /opt/environment/spack.yaml /export/spack.yaml
+cp /input/spack.json /export/spack.json
 cp /opt/environment/spack.lock /export/spack.lock
 dpkg-query -W > /export/apt-packages.txt
 kicad-cli version

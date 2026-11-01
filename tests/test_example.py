@@ -8,7 +8,7 @@ from pcb_em.common import ROOT, WorkflowError
 from pcb_em.pipeline import load_case, run_case
 
 
-@pytest.mark.parametrize('name', ['case.yaml', 'driven.yaml'])
+@pytest.mark.parametrize('name', ['case.json', 'driven.json'])
 def test_example_has_only_repository_inputs(name):
     path, case, board, project, out = load_case(ROOT/'examples/differential-pair'/name)
     assert board.is_relative_to(ROOT/'examples') and board.is_file()
@@ -22,7 +22,7 @@ def test_example_has_only_repository_inputs(name):
 
 def test_step_export_participates_in_cache_and_preserves_source(tmp_path):
     board=tmp_path/'board.kicad_pcb';board.write_text('unchanged source')
-    path=tmp_path/'case.yaml'
+    path=tmp_path/'case.json'
     case={'board':board.name,'mode':'2d','output':'results/example'}
     path.write_text(json.dumps(case))
 
@@ -59,7 +59,7 @@ def test_step_export_participates_in_cache_and_preserves_source(tmp_path):
 @pytest.mark.parametrize('exports', [True, None, {'step':'yes'}])
 def test_invalid_export_settings_fail_before_extraction(tmp_path,exports):
     (tmp_path/'board.kicad_pcb').write_text('source')
-    case=tmp_path/'case.yaml'
+    case=tmp_path/'case.json'
     case.write_text(json.dumps({'board':'board.kicad_pcb','mode':'2d','output':'results/test','exports':exports}))
     with pytest.raises(WorkflowError,match='exports.step'):
         load_case(case)

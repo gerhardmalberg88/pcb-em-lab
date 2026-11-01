@@ -6,11 +6,12 @@ if [ -f /input/check-cuda.cu ]; then
     apt-get update
     apt-get install -y --no-install-recommends libxml2
 fi
-if [ -f /opt/environment/spack.yaml ] && ! cmp -s /input/spack.yaml /opt/environment/spack.yaml; then
+# Spack requires this native filename; the maintained manifest is JSON.
+if [ -f /opt/environment/spack.yaml ] && ! cmp -s /input/spack.json /opt/environment/spack.yaml; then
     rm -rf /opt/environment
 fi
 mkdir -p /opt/environment /export
-cp /input/spack.yaml /opt/environment/spack.yaml
+cp /input/spack.json /opt/environment/spack.yaml
 if [ -f /input/spack.lock ] && [ ! -f /opt/environment/spack.lock ]; then
     cp /input/spack.lock /opt/environment/spack.lock
 fi
@@ -31,7 +32,7 @@ if [ -x /opt/view/bin/nvcc ]; then
         -o /usr/local/bin/pcb-em-cuda-memory-check
 fi
 spack -e /opt/environment find --json > /export/packages.json
-cp /opt/environment/spack.yaml /export/spack.yaml
+cp /input/spack.json /export/spack.json
 cp /opt/environment/spack.lock /export/spack.lock
 dpkg-query -W > /export/apt-packages.txt
 if [ -f /input/check-cuda.cu ]; then

@@ -1,5 +1,9 @@
 # Cases and physical assumptions
 
+Case files use **JSON only**, parsed with Python's standard library. Use
+`.json` filenames, double-quoted keys and strings, and no comments or trailing
+commas. Legacy YAML syntax is rejected. Paths are relative to the case file.
+
 Start with the self-contained [differential-pair example](../examples/differential-pair/README.md)
 for small 2D/3D cases and GUI instructions.
 
@@ -14,23 +18,36 @@ directory. BMS cases write under `sim/results/em`, already ignored by that repos
 
 Common keys:
 
-```yaml
-name: communication-section
-mode: 2d
-analysis: boundary-mode
-board: ../../../design/board.kicad_pcb
-project_root: ../../..
-output: ../../results/em/communication-section
-execution: {backend: auto, threads_per_rank: 1, gpu_count: 1}
-mesh: {fine_mm: 0.05, coarse_mm: 1.5, scale: 1, order: 2}
-materials:
-  substrate_epsilon_r: 4.5
-  soldermask_epsilon_r: 3.3
-assumptions:
-  - Replace material estimates with the manufacturer's characterized stackup.
+```json
+{
+  "name": "communication-section",
+  "mode": "2d",
+  "analysis": "boundary-mode",
+  "board": "../../../design/board.kicad_pcb",
+  "project_root": "../../..",
+  "output": "../../results/em/communication-section",
+  "execution": {
+    "backend": "auto",
+    "threads_per_rank": 1,
+    "gpu_count": 1
+  },
+  "mesh": {
+    "fine_mm": 0.05,
+    "coarse_mm": 1.5,
+    "scale": 1,
+    "order": 2
+  },
+  "materials": {
+    "substrate_epsilon_r": 4.5,
+    "soldermask_epsilon_r": 3.3
+  },
+  "assumptions": [
+    "Replace material estimates with the manufacturer's characterized stackup."
+  ]
+}
 ```
 
-Optional `exports: {step: true}` adds a KiCad board/copper STEP preview during
+Optional `"exports": {"step": true}` adds a KiCad board/copper STEP preview during
 extraction, without component bodies. It uses the KiCad user origin `0x0mm` and
 millimetres; it is not an input to the solver and its axes differ from the EM
 geometry. The option participates in the extraction cache key. Gmsh exports
@@ -58,14 +75,29 @@ assessing lateral-boundary sensitivity.
 The solver uses finite copper thickness and PEC boundaries. The model is a
 uniform line approximation, not an end-to-end communication link.
 
-```yaml
-frequency_hz: 4000000
-cross_section:
-  line_mm: [[292, 123], [302, 123]]
-  pair: [/bq79616/COMHP, /bq79616/COMHN]
-  air_margin_mm: 6
-  target_index: 1.8
-  modes: 2
+```json
+{
+  "frequency_hz": 4000000,
+  "cross_section": {
+    "line_mm": [
+      [
+        292,
+        123
+      ],
+      [
+        302,
+        123
+      ]
+    ],
+    "pair": [
+      "/bq79616/COMHP",
+      "/bq79616/COMHN"
+    ],
+    "air_margin_mm": 6,
+    "target_index": 1.8,
+    "modes": 2
+  }
+}
 ```
 
 `mode-Z.csv` contains modal impedance and applicable per-length parameters;
@@ -76,10 +108,10 @@ Compare progressively smaller `fine_mm`, higher order, and larger air domains.
 Keep the same mode definition when comparing runs.
 
 ```bash
-./pcb-em sweep CASE.yaml --parameter mesh.fine_mm --values 0.08 0.06 0.04 --backend cpu
-./pcb-em sweep CASE.yaml --parameter mesh.scale --values 1 0.75 0.5 --backend cpu
-./pcb-em sweep CASE.yaml --parameter cross_section.air_margin_mm --values 6 9 12 --backend cpu
-./pcb-em sweep MAGNETICS.yaml --parameter magnetics.cores.0.mu_r --values 50 100 200 --backend cpu
+./pcb-em sweep CASE.json --parameter mesh.fine_mm --values 0.08 0.06 0.04 --backend cpu
+./pcb-em sweep CASE.json --parameter mesh.scale --values 1 0.75 0.5 --backend cpu
+./pcb-em sweep CASE.json --parameter cross_section.air_margin_mm --values 6 9 12 --backend cpu
+./pcb-em sweep MAGNETICS.json --parameter magnetics.cores.0.mu_r --values 50 100 200 --backend cpu
 ```
 
 Each sweep writes independent resolved cases, results and a summary under the

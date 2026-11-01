@@ -13,8 +13,8 @@ Estimated dielectric losses are zero. The 2D cut at x = 10 mm is marked on
 
 | Case | Calculation | Output under `results/examples/differential-pair/` |
 |---|---|---|
-| `case.yaml` | Two cross-section modes at 100 MHz, modal impedance and per-length quantities | `2d/` |
-| `driven.yaml` | Two-port network at eight frequencies, 100–800 MHz, fields and circuit handoffs | `3d/` |
+| `case.json` | Two cross-section modes at 100 MHz, modal impedance and per-length quantities | `2d/` |
+| `driven.json` | Two-port network at eight frequencies, 100–800 MHz, fields and circuit handoffs | `3d/` |
 
 Both use PEC copper: finite thickness in 2D, sheets at layer midplanes in 3D.
 They omit conductor loss. Their small meshes and finite air domains have not
@@ -25,9 +25,9 @@ undergone convergence studies; results demonstrate operation, not accuracy.
 From the lab root after [installation](../../README.md#quick-start):
 
 ```bash
-./pcb-em run examples/differential-pair/case.yaml --backend cpu
+./pcb-em run examples/differential-pair/case.json --backend cpu
 # Optional 3D extension
-./pcb-em run examples/differential-pair/driven.yaml --backend cpu
+./pcb-em run examples/differential-pair/driven.json --backend cpu
 ```
 
 CPU uses two MPI ranks and one thread per rank. When the CUDA image is built
@@ -38,10 +38,10 @@ copy of the case first if you want to keep separate comparisons.
 Each stage is also independently selectable, with prerequisite resolution:
 
 ```bash
-./pcb-em run examples/differential-pair/case.yaml --backend cpu --stage extract
-./pcb-em run examples/differential-pair/case.yaml --backend cpu --stage mesh
-./pcb-em run examples/differential-pair/case.yaml --backend cpu --stage solve
-./pcb-em run examples/differential-pair/case.yaml --backend cpu --stage postprocess
+./pcb-em run examples/differential-pair/case.json --backend cpu --stage extract
+./pcb-em run examples/differential-pair/case.json --backend cpu --stage mesh
+./pcb-em run examples/differential-pair/case.json --backend cpu --stage solve
+./pcb-em run examples/differential-pair/case.json --backend cpu --stage postprocess
 ```
 
 Extraction reads saved fills without saving/refilling the PCB. `exports.step`
@@ -66,7 +66,7 @@ for the task menu. No extension is required, and no task starts automatically.
 The workspace's PCB task opens `results/examples/differential-pair/gui-source/`.
 Edits to this inspection copy do not change the simulation's source board.
 Its Qucs-S task opens `gui-circuit/`, preserves schematic edits and refreshes the
-generated Touchstone data. Edit the supplied YAML files in VS Code to change
+generated Touchstone data. Edit the supplied JSON files in VS Code to change
 the simulated cases. The commands below provide the same inspection tools
 without requiring VS Code.
 
@@ -80,7 +80,7 @@ if prompted. The fixture does not need downloaded models or libraries.
 | PCB and 3D board view | KiCad PCB Editor; **View → 3D Viewer** | `board.kicad_pcb` |
 | Board/copper STEP | FreeCAD | `extract/board.step` |
 | Constructed geometry and tagged mesh | Gmsh | `mesh/geometry.brep`, `mesh/board.msh` |
-| Case and solver settings | VS Code or another text editor | YAML, `mesh/case.json`, `solve/fields.json` or `solve/excitation-*.json` |
+| Case and solver settings | VS Code or another text editor | JSON, `mesh/case.json`, `solve/fields.json` or `solve/excitation-*.json` |
 | Fields, slices and mode/frequency selection | ParaView | `postprocess/view.pvsm`, native `.pvd` files |
 | Results and logs | Text editor or spreadsheet | `postprocess/README.md`, `report.json`, native CSVs and `solve/stage.log` |
 | Optional circuit reuse | Qucs-S | supplied `network.sch` with `postprocess/network.s2p` from 3D |
@@ -110,16 +110,16 @@ Load State dialog to the case's result directory, or open its native PVD file.
 For 3D Gmsh inspection, hide the surrounding air group or use a clipping plane
 to reveal the board inside the air domain.
 
-Palace has a JSON/command-line workflow, not a native solver GUI. Edit the YAML
+Palace has a JSON/command-line workflow, not a native solver GUI. Edit the JSON
 in a GUI text editor and launch the `Solve` task from the supplied workspace,
 or run the stage command in its integrated terminal. For
 example, with VS Code installed:
 
 ```bash
-code examples/differential-pair/case.yaml results/examples/differential-pair/2d/mesh/case.json
+code examples/differential-pair/case.json results/examples/differential-pair/2d/mesh/case.json
 ```
 
-Generated solver JSON is replaced on rerun; change the source YAML for
+Generated solver JSON is replaced on rerun; change the source JSON for
 repeatable runs. Keep manually edited solver files outside stage directories.
 See [Running Palace](https://awslabs.github.io/palace/stable/run/).
 

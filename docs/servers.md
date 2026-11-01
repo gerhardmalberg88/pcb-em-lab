@@ -16,7 +16,7 @@ build time; the laptop default is 75 with CUDA 12.9.1.
 ./pcb-em bootstrap
 ./pcb-em import /path/to/image-bundle
 ./pcb-em doctor --backend cpu --full
-./pcb-em run examples/differential-pair/case.yaml --backend cpu --mpi-ranks 2
+./pcb-em run examples/differential-pair/case.json --backend cpu --mpi-ranks 2
 ```
 
 The image bundle contains Docker-format archives and a SHA-256 manifest checked
@@ -89,7 +89,7 @@ To build for another GPU, substitute its compute architecture:
 ```bash
 ./pcb-em build --profile cuda --cuda-arch 80 --cuda-version 12.9.1 --jobs 2
 ./pcb-em doctor --backend cuda --full
-./pcb-em run CASE.yaml --backend cuda --mpi-ranks 1 --gpu-count 1
+./pcb-em run CASE.json --backend cuda --mpi-ranks 1 --gpu-count 1
 ```
 
 Multiple architectures may be supplied as a comma-separated list, supported by

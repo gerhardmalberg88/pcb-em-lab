@@ -49,7 +49,7 @@ def test_cache_checks_artifact_content(tmp_path):
 
 def test_build_cache_tracks_dependency_locks(tmp_path):
     data=environment('cpu')
-    (tmp_path/'spack.yaml').write_text(json.dumps(data))
+    (tmp_path/'spack.json').write_text(json.dumps(data))
     (tmp_path/'spack.lock').write_text('resolved dependency A')
     initial=input_key('base',data,tmp_path)
     assert input_key('base',data,tmp_path)==initial
@@ -72,7 +72,7 @@ def test_source_cache_tracks_referenced_models_outside_library_folder(tmp_path):
 
 def case_file(tmp_path):
     (tmp_path/'board.kicad_pcb').write_text('saved design')
-    p=tmp_path/'case.yaml'
+    p=tmp_path/'case.json'
     p.write_text(json.dumps({'board':'board.kicad_pcb','mode':'2d','analysis':'boundary-mode',
                            'cross_section':{'line_mm':[[0,0],[1,0]],'pair':['p','n']},'output':'results/test',
                            'execution':{'backend':'auto','mpi_ranks':2}}))
