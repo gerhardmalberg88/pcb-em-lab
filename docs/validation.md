@@ -3,6 +3,46 @@
 Observed validation, most recently 2026-11-01. This file records observed checks, not intended
 capabilities. Update it after each completed build and numerical check.
 
+## COMH/COML board-only study, 2026-11-01
+
+The BMS scope is now exclusively U201 COMH/COML to J501/J502 contact heads,
+without cables. Six native CPU cases completed (four sections and two 3D
+connector networks), plus six limited IC-section mesh/vertical-domain checks.
+The COML filtered section is diagnostic-only: a parity-screened approximately
+4.5 Ω mode is dominated by ground-plane edges and is not an accepted signal
+impedance. The hardware model explicitly uses COMH filtered L/C as a COML proxy.
+
+Dense 3D IC/filter meshes were rejected for degenerate tetrahedra. They are not
+completed full-path field solutions. The published board-path prediction uses
+lossless section-derived line equivalents on the primary side, a documented
+linear transformer/filter equivalent, and successful 3D secondary/contact
+networks. Three sample frequencies and these approximations establish no
+broadband, common-mode, material, mesh/domain, EMC or hardware acceptance.
+The completed run scope does not close these physical-model limitations.
+
+Reusable fixes and checks:
+
+- Explicit frequency-by-port reference-impedance arrays fix scikit-rf's ambiguous
+  one-dimensional `z0` interpretation when frequency and port counts match.
+  The three-port mixed-50/50/100 Ω regression passes, including Touchstone reload.
+- Configurable Delaunay/HXT, CAD tolerance, drill chord error, boundary-size
+  spreading and optimization support bounded mesh experiments. Nonpositive
+  tetrahedron quality is rejected. Failed meshes and interrupted diagnostics
+  remain local evidence, not validated outputs.
+- Separate error-estimator controls keep the field tolerance unchanged. On an
+  identical connector mesh, estimator tolerance 1e-2 versus 1e-6 preserved saved
+  port CSV values at printed precision and reduced estimation time substantially.
+  The resulting indicators remain approximate diagnostics.
+- All 28 lab tests and the standalone 3D CPU regression pass. The hardware model
+  has 11 focused tests for analytical circuit/line behavior, power-preserving
+  reduction, deadline cleanup and refusal to launch oversized meshes.
+
+Current BMS runs use CPU, two MPI ranks and one thread per rank. No new BMS GPU
+agreement claim is made. The earlier internal-magnetics records below are
+historical; those hardware cases were removed from the current requested scope.
+Native BMS evidence remains in the hardware checkout's ignored `sim/results/em`;
+its compact report is self-contained beside its case inputs.
+
 ## Standalone installation and GUI example, 2026-11-01
 
 The CPU, tools and CUDA images were rebuilt from the pinned recipes. Both full

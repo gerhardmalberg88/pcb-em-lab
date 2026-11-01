@@ -38,7 +38,10 @@ def assemble_network(solve_dir,port_metadata):
     if len(seen)!=n*n:raise WorkflowError(f'Incomplete S matrix: found {len(seen)} of {n*n} entries')
     if not np.isfinite(matrix).all():raise WorkflowError('S matrix contains non-finite values')
     network=skrf.Network(frequency=skrf.Frequency.from_f(frequency,unit='hz'),s=matrix,
-        z0=[p['reference_ohms'] for p in port_metadata],name='pcb-network')
+        # A 1-D array is ambiguous when the frequency and port counts match:
+        # scikit-rf then interprets it per frequency rather than per port.
+        z0=np.tile([p['reference_ohms'] for p in port_metadata],(len(frequency),1)),
+        name='pcb-network')
     network.port_names=[p['name'] for p in port_metadata]
     return network
 

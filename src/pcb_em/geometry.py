@@ -47,6 +47,13 @@ def configure(gmsh, config):
         raise WorkflowError('This Gmsh build has no OpenMP support; set mesh.threads to 1')
     gmsh.option.setNumber("General.Terminal", 1)
     gmsh.option.setString('Geometry.OCCTargetUnit','MM')
+    if 'cad_tolerance_mm' in config:
+        tolerance=float(config['cad_tolerance_mm'])
+        if not math.isfinite(tolerance) or not 0<tolerance<=.001:
+            gmsh.finalize()
+            raise WorkflowError('mesh.cad_tolerance_mm must be positive and at most 0.001 mm')
+        gmsh.option.setNumber('Geometry.Tolerance',tolerance)
+        gmsh.option.setNumber('Geometry.ToleranceBoolean',tolerance)
     gmsh.option.setNumber("General.NumThreads", threads)
     gmsh.option.setNumber("Mesh.MshFileVersion", 2.2)
     gmsh.option.setNumber("Mesh.Binary", 0)
@@ -54,6 +61,11 @@ def configure(gmsh, config):
     gmsh.option.setNumber("Mesh.MeshSizeMax", coarse)
     gmsh.option.setNumber('Mesh.MeshSizeFactor',scale)
     gmsh.option.setNumber("Mesh.MeshSizeFromCurvature", 12)
+    extend=config.get('extend_from_boundary',True)
+    if not isinstance(extend,bool):
+        gmsh.finalize()
+        raise WorkflowError('mesh.extend_from_boundary must be true or false')
+    gmsh.option.setNumber('Mesh.MeshSizeExtendFromBoundary',int(extend))
     gmsh.model.add("pcb-em")
 
 
@@ -88,7 +100,17 @@ def linear_settings(case,default_tolerance=1e-8,default_max_iterations=200,estim
     except (ValueError,TypeError) as error:raise WorkflowError('numerics.max_iterations must be a positive integer') from error
     multigrid=options.get('estimator_multigrid',estimator_multigrid)
     if not isinstance(multigrid,bool):raise WorkflowError('numerics.estimator_multigrid must be true or false')
-    return {'Tol':tolerance,'MaxIts':iterations,'EstimatorMG':multigrid}
+    result={'Tol':tolerance,'MaxIts':iterations,'EstimatorMG':multigrid}
+    if 'estimator_tolerance' in options:
+        estimator_tolerance=float(options['estimator_tolerance'])
+        if not math.isfinite(estimator_tolerance) or not 0<estimator_tolerance<1:
+            raise WorkflowError('numerics.estimator_tolerance must be between zero and one')
+        result['EstimatorTol']=estimator_tolerance
+    if 'estimator_max_iterations' in options:
+        try:result['EstimatorMaxIts']=positive(options['estimator_max_iterations'])
+        except (ValueError,TypeError) as error:
+            raise WorkflowError('numerics.estimator_max_iterations must be a positive integer') from error
+    return result
 
 
 def cross_section(board,case,out):

@@ -22,12 +22,18 @@ def pcb_case(board,case,out):
         for hole in board['holes']:
             a,b=hole['drill'];radius=min(a,b)/2
             if radius<=0:continue
+            quadrants=12
+            if 'drill_chord_error_mm' in mesh:
+                error=float(mesh['drill_chord_error_mm'])
+                if not math.isfinite(error) or not 0<error<=float(board['polygon_chord_error_mm']):
+                    raise WorkflowError('mesh.drill_chord_error_mm must be positive and no larger than the extracted polygon tolerance')
+                quadrants=max(2,math.ceil(math.pi/(4*math.acos(1-min(error/radius,1)))))
             x,y=hole['center']
-            if abs(a-b)<1e-8:shape=Point(x,y).buffer(radius,quad_segs=12)
+            if abs(a-b)<1e-8:shape=Point(x,y).buffer(radius,quad_segs=quadrants)
             else:
                 length=abs(a-b)
                 line=LineString([(x-length/2,y),(x+length/2,y)]) if a>b else LineString([(x,y-length/2),(x,y+length/2)])
-                shape=rotate(line.buffer(radius,quad_segs=12),-hole['angle_deg'],origin=(x,y))
+                shape=rotate(line.buffer(radius,quad_segs=quadrants),-hole['angle_deg'],origin=(x,y))
             if not region.intersects(shape):continue
             if not region.buffer(1e-7).covers(shape):
                 raise WorkflowError('The modeled board region cuts a drilled hole; move the crop boundary beyond the complete hole')
@@ -223,7 +229,13 @@ def pcb_case(board,case,out):
                 outer.append(tag)
         physical(gmsh,2,outer,101,'air-outer')
         groups['boundary:101']='air-outer'
-        gmsh.option.setNumber('Mesh.Algorithm3D',10)
+        algorithm=int(mesh.get('algorithm_3d',10))
+        if algorithm not in (1,10):
+            raise WorkflowError('mesh.algorithm_3d must be 1 (Delaunay) or 10 (HXT)')
+        gmsh.option.setNumber('Mesh.Algorithm3D',algorithm)
+        optimize=mesh.get('optimize',True)
+        if not isinstance(optimize,bool):raise WorkflowError('mesh.optimize must be true or false')
+        gmsh.option.setNumber('Mesh.Optimize',int(optimize))
         gmsh.write(str(out/'geometry.brep'))
         try:
             gmsh.model.mesh.generate(3)
@@ -231,6 +243,12 @@ def pcb_case(board,case,out):
             gmsh.write(str(out/'failed-surface.msh'))
             raise
         gmsh.write(str(out/'board.msh'))
+        tetrahedra=gmsh.model.mesh.getElementsByType(4)[0]
+        quality=gmsh.model.mesh.getElementQualities(tetrahedra,'minSICN')
+        if not len(quality) or min(quality)<=0:
+            raise WorkflowError('3D mesh has missing or nonpositive-quality tetrahedra')
+        mesh_quality={'tetrahedra':len(quality),'minimum_minSICN':float(min(quality)),
+                      'below_0_01':int(sum(q<.01 for q in quality))}
         frequencies=case.get('frequencies_hz',[1e6,4e6,10e6])
         config={'Problem':{'Type':'Driven','Output':'postpro','Verbose':1},'Model':{'Mesh':'board.msh','L0':.001},
             'Domains':{'Materials':materials},'Boundaries':{'PEC':{'Attributes':pec_attributes},
@@ -241,5 +259,6 @@ def pcb_case(board,case,out):
         write_json(out/'case.json',config)
         write_json(out/'geometry.json',{'dimension':3,'groups':groups,'ports':port_metadata,
             'region_mm':list(region.bounds),'assumptions':case.get('assumptions',[]),
-            'mesh_nodes':len(gmsh.model.mesh.getNodes()[0]),'copper_model':'PEC sheets at saved copper midplanes'})
+            'mesh_nodes':len(gmsh.model.mesh.getNodes()[0]),'mesh_quality':mesh_quality,
+            'algorithm_3d':algorithm,'copper_model':'PEC sheets at saved copper midplanes'})
     finally:gmsh.finalize()

@@ -87,3 +87,28 @@ def test_postprocess_exports_standard_touchstone_reference(tmp_path):
     actual=skrf.Network(str(path))
     assert actual.z0==pytest.approx(np.full((2,2),100))
     assert actual.s==pytest.approx(expected.s)
+
+
+def test_equal_frequency_and_port_counts_keep_mixed_references(tmp_path):
+    # A 1-D z0 with three values is interpreted per frequency by scikit-rf
+    # when both axes have length three. Use independent known resistive ports.
+    import skrf
+    for excitation in range(1,4):
+        folder=tmp_path/f'excitation-{excitation}';folder.mkdir()
+        header=['f (GHz)'];rows=[]
+        for port in range(1,4):
+            header.extend([f'|S[{port}][{excitation}]| (dB)',f'arg(S[{port}][{excitation}]) (deg.)'])
+        for frequency in [.001,.004,.01]:
+            values=[frequency]
+            for port in range(1,4):
+                values.extend([20*np.log10(port*.1 if port==excitation else 1e-20),0])
+            rows.append(','.join(map(str,values)))
+        (folder/'port-S.csv').write_text(','.join(header)+'\n'+'\n'.join(rows)+'\n')
+    metadata=[{'name':str(i),'reference_ohms':r} for i,r in enumerate([50,50,100])]
+    network=assemble_network(tmp_path,metadata)
+    np.testing.assert_array_equal(network.z0,np.tile([50,50,100],(3,1)))
+    network.renormalize(50)
+    np.testing.assert_allclose(network.s[:,2,2],(100*1.3/.7-50)/(100*1.3/.7+50),atol=1e-12)
+    network.write_touchstone(filename='mixed',dir=str(tmp_path),r_ref=50)
+    loaded=skrf.Network(tmp_path/'mixed.s3p')
+    np.testing.assert_allclose(loaded.s,network.s,atol=1e-12)

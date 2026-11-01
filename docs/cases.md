@@ -87,6 +87,25 @@ case output directory. `metrics.csv` and `comparison.json` give successive chang
 in differential-candidate impedance/L/C or winding self-inductances. Ambiguous
 2D mode selections are not compared automatically. Sweep tables expose sensitivity; convergence acceptance
 still requires matching the same physical modes and reviewing the selected metric.
+`mesh.algorithm_3d` selects HXT (`10`, default) or Delaunay (`1`) for 3D PCB
+meshes. Delaunay is useful when HXT improvement is slow on thin PCB geometry.
+Optional `mesh.cad_tolerance_mm` sets both CAD and boolean tolerance in mm
+(maximum 0.001 mm); record it and keep it well below source geometry precision.
+This can help dense coplanar IC-pad geometry without editing the source PCB.
+`mesh.drill_chord_error_mm` optionally reduces drill/barrel polygon faceting to a
+bounded radial error, never exceeding the extractor's polygon tolerance. Pads,
+copper sheets and dielectrics use the same subtracted bore polygon, preserving
+contact. The default keeps the original 48-segment circles. Setting
+`mesh.extend_from_boundary: false` stops very fine boundary sizes from spreading
+through entire faces/volumes; this changes mesh density and requires sensitivity
+checks, while retaining the constructed geometry.
+The generated `geometry.json` records the algorithm, tetrahedron count, minimum
+`minSICN` quality and count below 0.01; nonpositive quality prevents solving.
+A positive-quality mesh still requires numerical convergence checks.
+`mesh.optimize: false` disables automatic tetrahedron optimization for a bounded
+coarse run; positive orientation is still checked. Treat local field peaks and
+absolute values as exploratory until mesh/domain sensitivity is established.
+
 `mesh.scale` globally scales the mesh sizes and is the primary refinement control
 for 3D cases. `fine_mm` and `coarse_mm` bound local sizes; the 2D generator also
 uses `fine_mm` in its explicit refinement field around conductors.
@@ -95,6 +114,11 @@ Optional `numerics.linear_tolerance`, `numerics.max_iterations` and
 `numerics.estimator_multigrid` control linear convergence and the error estimator.
 Defaults are 1e-9 / 100 iterations for 2D and 1e-8 / 200 for 3D; 3D enables the
 multigrid error estimator. These settings are shared by CPU and CUDA runs.
+Optional `numerics.estimator_tolerance` and `numerics.estimator_max_iterations`
+map to Palace's separate flux-error estimator controls. They do not change the
+main field-solver tolerance. Use a looser estimator tolerance only for approximate
+diagnostics, record it in the case assumptions, and do not treat its indicators
+as a mesh-convergence certificate. Omitted settings retain Palace's defaults.
 A Palace warning that a linear solve did not converge prevents a successful cache
 entry even when the solver process returns zero.
 
@@ -183,9 +207,9 @@ The current convention follows the [pinned Palace implementation](https://github
 One ampere is a linear normalization, not an asserted operating current or a
 prediction that the actual core remains unsaturated at that current.
 
-BMS T501/T502 examples include separate transformer and common-mode-choke cores
-and winding sets. L601 has a separate inductor case. Their dimensions, turn counts
-and materials are **inferred placeholders**, not recovered supplier internals.
+A multi-core case can use separate transformer and common-mode-choke cores
+and winding sets. Dimensions, turn counts and materials supplied without
+manufacturer evidence are **inferred placeholders**, not recovered internals.
 Package STEP files cannot establish winding topology. The open cylindrical cores
 and gapped sheet turns deliberately expose editable assumptions and may differ
 substantially from the actual closed magnetic circuit. Do not claim component
