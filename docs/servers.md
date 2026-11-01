@@ -1,8 +1,9 @@
 # Moving the workflow to a server
 
 The repository and Python distribution are named `pcb-em-lab`; the command
-remains `pcb-em`. Keep the workflow and hardware repositories as siblings for
-the relative paths in the supplied examples.
+remains `pcb-em`. The supplied differential-pair example needs only this
+repository. For your own board, copy its case and design assets and pass the
+case's explicit path; a sibling checkout layout is not required.
 
 Use a single-node x86-64 Linux host with rootless Podman. CPU operation needs no
 NVIDIA runtime. For CUDA, check the host driver/device first, then install NVIDIA
@@ -11,11 +12,11 @@ build time; the laptop default is 75 with CUDA 12.9.1.
 
 ```bash
 ./pcb-em export /path/to/image-bundle --profile all
-# Copy this repository, the image bundle, and the hardware checkout to the server.
+# Copy this repository and the image bundle to the server.
 ./pcb-em bootstrap
 ./pcb-em import /path/to/image-bundle
 ./pcb-em doctor --backend cpu --full
-./pcb-em run ../bms-cmu-bq79616-hardware/sim/em/isospi-2d/comh.yaml --backend cpu --mpi-ranks 2
+./pcb-em run examples/differential-pair/case.yaml --backend cpu --mpi-ranks 2
 ```
 
 The image bundle contains Docker-format archives and a SHA-256 manifest checked

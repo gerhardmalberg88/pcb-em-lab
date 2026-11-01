@@ -1,10 +1,49 @@
 # Validation status
 
-Observed validation, 2026-10-30. This file records observed checks, not intended
+Observed validation, most recently 2026-11-01. This file records observed checks, not intended
 capabilities. Update it after each completed build and numerical check.
 
-See the [implementation checklist and remaining engineering TODOs](TODO.md)
-for completed work and open numerical/physical accuracy checks.
+## Standalone installation and GUI example, 2026-11-01
+
+The CPU, tools and CUDA images were rebuilt from the pinned recipes. Both full
+`doctor` runs pass, including native tool interfaces, headless rendering, GUI
+launchers, circuit handoffs and Palace references. The working graphics driver
+was preserved. The FLTK bootstrap now defers configure to Spack using
+`NOCONFIGURE=1`; KiCad remains 10.0.7 from the pinned snapshot.
+
+| Current check | Observed result |
+|---|---|
+| Unit suite | 22 passed |
+| Standalone 2D / 3D CPU pipelines | Complete, approximately 15.7 / 25.2 seconds with installed images; two ranks, one thread per rank |
+| Stage cache | All four stages reused, approximately 0.25 seconds |
+| Fresh repository-only CPU run | Passed in a copy excluding ignored files, caches and results; reused installed container images, not prior stage artifacts |
+| GUI reopening | PCB Editor, FreeCAD, Gmsh 2D/3D, ParaView 2D/3D and Qucs-S passed with authenticated displays and preserved input hashes; screenshots inspected |
+| Qucs-S actual FEM handoff | F2 simulation generated eight frequency points; maximum absolute S21 difference from Touchstone 1.57e-16 |
+| VS Code workspace | Task menu and cached complete 2D CPU task exercised in an isolated profile; terminal screenshot inspected |
+| CPU/CUDA reference agreement | Maximum relative differences 5.4871e-5 (BoundaryMode), 2.2266e-6 (Driven), 1.5916e-10 (Magnetostatic) |
+
+The standalone cases themselves ran on CPU; GPU validation used the three
+reference problems. This does not close the historical BMS second-mode accuracy
+issue described below. No new BMS simulations were run for this setup task.
+
+The 2D differential candidate (mode 2) is approximately 111.674 Ω. The other
+mode has an ill-conditioned terminal-derived impedance and must not be treated
+as a validated common-mode impedance. Both teaching cases use coarse meshes,
+finite air domains and lossless materials/PEC copper without convergence studies.
+The 3D circuit fit passes the implemented passivity/error checks with RMS error
+0.03319; inspect the retained fitting diagnostics before reusing it. Neither case
+qualifies a manufactured PCB. Field images use the normalization stated on them.
+
+Current local evidence is under ignored `results/validation/`: `cpu/doctor.json`,
+`cuda/doctor.json`, `cuda/palace/references.json`,
+`standalone-setup/progress.json`, `standalone-setup/clean-copy.json`,
+`example-gui/checks.json` and `example-vscode/check.json`.
+Native example outputs and provenance are under
+`results/examples/differential-pair/{2d,3d}/`. The initial GUI authentication
+failure is retained in progress history; after fixing the Xauthority hostname
+match, all seven actual example GUI checks passed.
+
+## Earlier hardware and runtime validation, 2026-10-30
 
 The workspace was relocated into `pcb-em-lab` on 2026-10-30. Existing historical
 logs and provenance retain their recorded absolute paths; map the old workspace

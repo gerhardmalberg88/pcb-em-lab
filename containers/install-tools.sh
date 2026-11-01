@@ -24,7 +24,10 @@ if ! command -v kicad-cli >/dev/null; then
 fi
 spack -e /opt/environment concretize
 cp /opt/environment/spack.lock /export/spack.lock
-spack -e /opt/environment install -j "${BUILD_JOBS:-2}" --fail-fast
+# FLTK 1.3.7 autogen.sh otherwise runs configure before Spack supplies
+# --disable-xft, incorrectly requiring undeclared FreeType/Xft headers.
+# Let each package recipe run its configured build options after bootstrapping.
+NOCONFIGURE=1 spack -e /opt/environment install -j "${BUILD_JOBS:-2}" --fail-fast
 /usr/bin/python3 /input/install-assets.py /input/pins.json
 spack -e /opt/environment find --json > /export/packages.json
 cp /opt/environment/spack.yaml /export/spack.yaml

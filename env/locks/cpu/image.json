@@ -1,6 +1,7 @@
 {
   "base": "docker.io/library/ubuntu@sha256:24737cef17f4e22b1977df7d9a05e77c4e28b7da5b8911f8d8ccda136bf3573c",
-  "id": "f19db8891045c79532024a358d6ada80ddee4cf598baf776c49d8a0c84231165",
+  "id": "7d33035aa6e9277c9f9bd2ac031b4c3e26cd0cc1178cdc4503265c11330b23b7",
   "image": "localhost/pcb-em-cpu:0.1",
-  "inputs": "552c917986aa"
+  "inputs": "06f774b2a401",
+  "runtime_environment": {}
 }

@@ -1,0 +1,27 @@
+{
+  "name": "Standalone differential-pair cross-section",
+  "project_root": ".",
+  "board": "board.kicad_pcb",
+  "output": "../../results/examples/differential-pair/2d",
+  "mode": "2d",
+  "analysis": "boundary-mode",
+  "exports": {"step": true},
+  "frequency_hz": 100000000,
+  "cross_section": {
+    "line_mm": [[10, 0], [10, 12]],
+    "pair": ["P", "N"],
+    "air_margin_mm": 4,
+    "target_index": 1.8,
+    "modes": 2
+  },
+  "mesh": {"fine_mm": 0.1, "coarse_mm": 1.5, "scale": 1, "order": 2, "threads": 1},
+  "materials": {"substrate_epsilon_r": 4.2, "soldermask_epsilon_r": 3.3},
+  "execution": {"backend": "cpu", "mpi_ranks": 2, "threads_per_rank": 1, "gpu_count": 1},
+  "assumptions": [
+    "Synthetic 20 x 12 mm two-layer board, independent of external projects and libraries.",
+    "Two straight 0.8 mm traces with a 0.6 mm edge gap over a saved rectangular ground plane.",
+    "Uniform cross-section at x=10 mm; the drawing line identifies the cut in KiCad.",
+    "Lossless estimated dielectric and PEC copper; illustrative modal fields, not a manufactured-board impedance qualification.",
+    "The finite air domain and this teaching mesh have not undergone mesh/domain convergence studies."
+  ]
+}

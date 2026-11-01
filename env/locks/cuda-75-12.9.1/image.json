@@ -1,24 +1,10 @@
 {
   "base": "docker.io/library/ubuntu@sha256:24737cef17f4e22b1977df7d9a05e77c4e28b7da5b8911f8d8ccda136bf3573c",
-  "id": "510b7d5e247ebaed06d2d25ccff9cd9448952437764d29b4b9d1609cab6a671a",
+  "id": "1ee71e997015356bc1de842ddebc3e4f1d01e3f104380108a4fce3706369081e",
   "image": "localhost/pcb-em-cuda:0.1",
-  "inputs": "47f00b0a99e7",
+  "inputs": "aa7053cba902",
   "runtime_environment": {
     "LD_PRELOAD": "/usr/local/lib/pcb-em-cuda-runtime.so",
     "MFEM_MEMORY": "cuda"
-  },
-  "runtime_patch": {
-    "base_builder": "localhost/pcb-em-builder:158ce5750249",
-    "binary_sha256": {
-      "/usr/local/bin/pcb-em-cuda-memory-check": "316b5c62ac9435376d29dbba2d9e219f27288301985c120dc4019877b7370aea",
-      "/usr/local/lib/pcb-em-cuda-runtime.so": "5218b7416f3a93efcee4632b6d89b6f7182f390e53e3c7146ddd22d8c79e6bd3"
-    },
-    "method": "Compiled two small runtime artifacts in an offline container using the existing pinned compiler and headers; numerical packages unchanged.",
-    "package_hashes_verified": 82,
-    "parent_image": "9be3d5015d9c60ac59c62c7b18606a25d804ea356c812ad1abbb50798e9b0614",
-    "sources": {
-      "containers/cuda-runtime.c": "1456ec84eab61c367367735a7776dff6a42651362bbf657ed969cdac8c808582",
-      "scripts/check-cuda-memory.c": "906f1be23701d7051b47dbca015f6a72e13c15d4ff05f73b644e2d0fafbcba6e"
-    }
   }
 }

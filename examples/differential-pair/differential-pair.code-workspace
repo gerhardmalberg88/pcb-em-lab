@@ -1,0 +1,504 @@
+{
+  "folders": [
+    {
+      "name": "pcb-em-lab",
+      "path": "../.."
+    }
+  ],
+  "tasks": {
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "EM 2D: All stages (CPU)",
+        "type": "process",
+        "command": "${workspaceFolder:pcb-em-lab}/pcb-em",
+        "args": [
+          "run",
+          "${workspaceFolder:pcb-em-lab}/examples/differential-pair/case.yaml",
+          "--backend",
+          "cpu",
+          "--stage",
+          "all"
+        ],
+        "options": {
+          "cwd": "${workspaceFolder:pcb-em-lab}"
+        },
+        "problemMatcher": [],
+        "presentation": {
+          "reveal": "always",
+          "panel": "dedicated"
+        },
+        "runOptions": {
+          "instanceLimit": 1
+        }
+      },
+      {
+        "label": "EM 2D: Extract (CPU)",
+        "type": "process",
+        "command": "${workspaceFolder:pcb-em-lab}/pcb-em",
+        "args": [
+          "run",
+          "${workspaceFolder:pcb-em-lab}/examples/differential-pair/case.yaml",
+          "--backend",
+          "cpu",
+          "--stage",
+          "extract"
+        ],
+        "options": {
+          "cwd": "${workspaceFolder:pcb-em-lab}"
+        },
+        "problemMatcher": [],
+        "presentation": {
+          "reveal": "always",
+          "panel": "dedicated"
+        },
+        "runOptions": {
+          "instanceLimit": 1
+        }
+      },
+      {
+        "label": "EM 2D: Mesh (CPU)",
+        "type": "process",
+        "command": "${workspaceFolder:pcb-em-lab}/pcb-em",
+        "args": [
+          "run",
+          "${workspaceFolder:pcb-em-lab}/examples/differential-pair/case.yaml",
+          "--backend",
+          "cpu",
+          "--stage",
+          "mesh"
+        ],
+        "options": {
+          "cwd": "${workspaceFolder:pcb-em-lab}"
+        },
+        "problemMatcher": [],
+        "presentation": {
+          "reveal": "always",
+          "panel": "dedicated"
+        },
+        "runOptions": {
+          "instanceLimit": 1
+        }
+      },
+      {
+        "label": "EM 2D: Solve (CPU)",
+        "type": "process",
+        "command": "${workspaceFolder:pcb-em-lab}/pcb-em",
+        "args": [
+          "run",
+          "${workspaceFolder:pcb-em-lab}/examples/differential-pair/case.yaml",
+          "--backend",
+          "cpu",
+          "--stage",
+          "solve"
+        ],
+        "options": {
+          "cwd": "${workspaceFolder:pcb-em-lab}"
+        },
+        "problemMatcher": [],
+        "presentation": {
+          "reveal": "always",
+          "panel": "dedicated"
+        },
+        "runOptions": {
+          "instanceLimit": 1
+        }
+      },
+      {
+        "label": "EM 2D: Postprocess (CPU)",
+        "type": "process",
+        "command": "${workspaceFolder:pcb-em-lab}/pcb-em",
+        "args": [
+          "run",
+          "${workspaceFolder:pcb-em-lab}/examples/differential-pair/case.yaml",
+          "--backend",
+          "cpu",
+          "--stage",
+          "postprocess"
+        ],
+        "options": {
+          "cwd": "${workspaceFolder:pcb-em-lab}"
+        },
+        "problemMatcher": [],
+        "presentation": {
+          "reveal": "always",
+          "panel": "dedicated"
+        },
+        "runOptions": {
+          "instanceLimit": 1
+        }
+      },
+      {
+        "label": "EM 3D: All stages (CPU)",
+        "type": "process",
+        "command": "${workspaceFolder:pcb-em-lab}/pcb-em",
+        "args": [
+          "run",
+          "${workspaceFolder:pcb-em-lab}/examples/differential-pair/driven.yaml",
+          "--backend",
+          "cpu",
+          "--stage",
+          "all"
+        ],
+        "options": {
+          "cwd": "${workspaceFolder:pcb-em-lab}"
+        },
+        "problemMatcher": [],
+        "presentation": {
+          "reveal": "always",
+          "panel": "dedicated"
+        },
+        "runOptions": {
+          "instanceLimit": 1
+        }
+      },
+      {
+        "label": "EM 3D: Extract (CPU)",
+        "type": "process",
+        "command": "${workspaceFolder:pcb-em-lab}/pcb-em",
+        "args": [
+          "run",
+          "${workspaceFolder:pcb-em-lab}/examples/differential-pair/driven.yaml",
+          "--backend",
+          "cpu",
+          "--stage",
+          "extract"
+        ],
+        "options": {
+          "cwd": "${workspaceFolder:pcb-em-lab}"
+        },
+        "problemMatcher": [],
+        "presentation": {
+          "reveal": "always",
+          "panel": "dedicated"
+        },
+        "runOptions": {
+          "instanceLimit": 1
+        }
+      },
+      {
+        "label": "EM 3D: Mesh (CPU)",
+        "type": "process",
+        "command": "${workspaceFolder:pcb-em-lab}/pcb-em",
+        "args": [
+          "run",
+          "${workspaceFolder:pcb-em-lab}/examples/differential-pair/driven.yaml",
+          "--backend",
+          "cpu",
+          "--stage",
+          "mesh"
+        ],
+        "options": {
+          "cwd": "${workspaceFolder:pcb-em-lab}"
+        },
+        "problemMatcher": [],
+        "presentation": {
+          "reveal": "always",
+          "panel": "dedicated"
+        },
+        "runOptions": {
+          "instanceLimit": 1
+        }
+      },
+      {
+        "label": "EM 3D: Solve (CPU)",
+        "type": "process",
+        "command": "${workspaceFolder:pcb-em-lab}/pcb-em",
+        "args": [
+          "run",
+          "${workspaceFolder:pcb-em-lab}/examples/differential-pair/driven.yaml",
+          "--backend",
+          "cpu",
+          "--stage",
+          "solve"
+        ],
+        "options": {
+          "cwd": "${workspaceFolder:pcb-em-lab}"
+        },
+        "problemMatcher": [],
+        "presentation": {
+          "reveal": "always",
+          "panel": "dedicated"
+        },
+        "runOptions": {
+          "instanceLimit": 1
+        }
+      },
+      {
+        "label": "EM 3D: Postprocess (CPU)",
+        "type": "process",
+        "command": "${workspaceFolder:pcb-em-lab}/pcb-em",
+        "args": [
+          "run",
+          "${workspaceFolder:pcb-em-lab}/examples/differential-pair/driven.yaml",
+          "--backend",
+          "cpu",
+          "--stage",
+          "postprocess"
+        ],
+        "options": {
+          "cwd": "${workspaceFolder:pcb-em-lab}"
+        },
+        "problemMatcher": [],
+        "presentation": {
+          "reveal": "always",
+          "panel": "dedicated"
+        },
+        "runOptions": {
+          "instanceLimit": 1
+        }
+      },
+      {
+        "label": "Prepare PCB inspection copy",
+        "type": "process",
+        "command": "python3",
+        "args": [
+          "${workspaceFolder:pcb-em-lab}/examples/differential-pair/prepare-gui.py",
+          "board"
+        ],
+        "options": {
+          "cwd": "${workspaceFolder:pcb-em-lab}"
+        },
+        "problemMatcher": [],
+        "presentation": {
+          "reveal": "always",
+          "panel": "dedicated"
+        },
+        "runOptions": {
+          "instanceLimit": 1
+        },
+        "hide": true
+      },
+      {
+        "label": "Prepare circuit inspection copy",
+        "type": "process",
+        "command": "python3",
+        "args": [
+          "${workspaceFolder:pcb-em-lab}/examples/differential-pair/prepare-gui.py",
+          "circuit"
+        ],
+        "options": {
+          "cwd": "${workspaceFolder:pcb-em-lab}"
+        },
+        "problemMatcher": [],
+        "presentation": {
+          "reveal": "always",
+          "panel": "dedicated"
+        },
+        "runOptions": {
+          "instanceLimit": 1
+        },
+        "hide": true,
+        "dependsOn": "EM 3D: Postprocess (CPU)"
+      },
+      {
+        "label": "Inspect: PCB in KiCad",
+        "type": "process",
+        "command": "${workspaceFolder:pcb-em-lab}/pcb-em",
+        "args": [
+          "gui",
+          "pcbnew",
+          "--workdir",
+          "${workspaceFolder:pcb-em-lab}/results/examples/differential-pair/gui-source",
+          "--",
+          "/work/board.kicad_pcb"
+        ],
+        "options": {
+          "cwd": "${workspaceFolder:pcb-em-lab}"
+        },
+        "problemMatcher": [],
+        "presentation": {
+          "reveal": "always",
+          "panel": "dedicated"
+        },
+        "runOptions": {
+          "instanceLimit": 1
+        },
+        "dependsOn": "Prepare PCB inspection copy",
+        "dependsOrder": "sequence"
+      },
+      {
+        "label": "Inspect 2D: STEP in FreeCAD",
+        "type": "process",
+        "command": "${workspaceFolder:pcb-em-lab}/pcb-em",
+        "args": [
+          "gui",
+          "freecad",
+          "--workdir",
+          "${workspaceFolder:pcb-em-lab}/results/examples/differential-pair/2d/extract",
+          "--",
+          "/work/board.step"
+        ],
+        "options": {
+          "cwd": "${workspaceFolder:pcb-em-lab}"
+        },
+        "problemMatcher": [],
+        "presentation": {
+          "reveal": "always",
+          "panel": "dedicated"
+        },
+        "runOptions": {
+          "instanceLimit": 1
+        },
+        "dependsOn": "EM 2D: Extract (CPU)",
+        "dependsOrder": "sequence"
+      },
+      {
+        "label": "Inspect 2D: mesh in Gmsh",
+        "type": "process",
+        "command": "${workspaceFolder:pcb-em-lab}/pcb-em",
+        "args": [
+          "gui",
+          "gmsh",
+          "--workdir",
+          "${workspaceFolder:pcb-em-lab}/results/examples/differential-pair/2d/mesh",
+          "--",
+          "/work/board.msh"
+        ],
+        "options": {
+          "cwd": "${workspaceFolder:pcb-em-lab}"
+        },
+        "problemMatcher": [],
+        "presentation": {
+          "reveal": "always",
+          "panel": "dedicated"
+        },
+        "runOptions": {
+          "instanceLimit": 1
+        },
+        "dependsOn": "EM 2D: Mesh (CPU)",
+        "dependsOrder": "sequence"
+      },
+      {
+        "label": "Inspect 2D: fields in ParaView",
+        "type": "process",
+        "command": "${workspaceFolder:pcb-em-lab}/pcb-em",
+        "args": [
+          "gui",
+          "paraview",
+          "--workdir",
+          "${workspaceFolder:pcb-em-lab}/results/examples/differential-pair/2d",
+          "--",
+          "--state=/work/postprocess/view.pvsm"
+        ],
+        "options": {
+          "cwd": "${workspaceFolder:pcb-em-lab}"
+        },
+        "problemMatcher": [],
+        "presentation": {
+          "reveal": "always",
+          "panel": "dedicated"
+        },
+        "runOptions": {
+          "instanceLimit": 1
+        },
+        "dependsOn": "EM 2D: Postprocess (CPU)",
+        "dependsOrder": "sequence"
+      },
+      {
+        "label": "Inspect 3D: STEP in FreeCAD",
+        "type": "process",
+        "command": "${workspaceFolder:pcb-em-lab}/pcb-em",
+        "args": [
+          "gui",
+          "freecad",
+          "--workdir",
+          "${workspaceFolder:pcb-em-lab}/results/examples/differential-pair/3d/extract",
+          "--",
+          "/work/board.step"
+        ],
+        "options": {
+          "cwd": "${workspaceFolder:pcb-em-lab}"
+        },
+        "problemMatcher": [],
+        "presentation": {
+          "reveal": "always",
+          "panel": "dedicated"
+        },
+        "runOptions": {
+          "instanceLimit": 1
+        },
+        "dependsOn": "EM 3D: Extract (CPU)",
+        "dependsOrder": "sequence"
+      },
+      {
+        "label": "Inspect 3D: mesh in Gmsh",
+        "type": "process",
+        "command": "${workspaceFolder:pcb-em-lab}/pcb-em",
+        "args": [
+          "gui",
+          "gmsh",
+          "--workdir",
+          "${workspaceFolder:pcb-em-lab}/results/examples/differential-pair/3d/mesh",
+          "--",
+          "/work/board.msh"
+        ],
+        "options": {
+          "cwd": "${workspaceFolder:pcb-em-lab}"
+        },
+        "problemMatcher": [],
+        "presentation": {
+          "reveal": "always",
+          "panel": "dedicated"
+        },
+        "runOptions": {
+          "instanceLimit": 1
+        },
+        "dependsOn": "EM 3D: Mesh (CPU)",
+        "dependsOrder": "sequence"
+      },
+      {
+        "label": "Inspect 3D: fields in ParaView",
+        "type": "process",
+        "command": "${workspaceFolder:pcb-em-lab}/pcb-em",
+        "args": [
+          "gui",
+          "paraview",
+          "--workdir",
+          "${workspaceFolder:pcb-em-lab}/results/examples/differential-pair/3d",
+          "--",
+          "--state=/work/postprocess/view.pvsm"
+        ],
+        "options": {
+          "cwd": "${workspaceFolder:pcb-em-lab}"
+        },
+        "problemMatcher": [],
+        "presentation": {
+          "reveal": "always",
+          "panel": "dedicated"
+        },
+        "runOptions": {
+          "instanceLimit": 1
+        },
+        "dependsOn": "EM 3D: Postprocess (CPU)",
+        "dependsOrder": "sequence"
+      },
+      {
+        "label": "Inspect 3D: network in Qucs-S",
+        "type": "process",
+        "command": "${workspaceFolder:pcb-em-lab}/pcb-em",
+        "args": [
+          "gui",
+          "qucs-s",
+          "--workdir",
+          "${workspaceFolder:pcb-em-lab}/results/examples/differential-pair/gui-circuit",
+          "--",
+          "/work/network.sch"
+        ],
+        "options": {
+          "cwd": "${workspaceFolder:pcb-em-lab}"
+        },
+        "problemMatcher": [],
+        "presentation": {
+          "reveal": "always",
+          "panel": "dedicated"
+        },
+        "runOptions": {
+          "instanceLimit": 1
+        },
+        "dependsOn": "Prepare circuit inspection copy",
+        "dependsOrder": "sequence"
+      }
+    ]
+  }
+}

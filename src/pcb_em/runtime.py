@@ -8,6 +8,21 @@ from .common import ROOT, CACHE, WorkflowError, call
 IMAGES = {kind: f"localhost/pcb-em-{kind}:0.1" for kind in ("tools", "cpu", "cuda")}
 
 
+def initialize_gui_settings(tool, home):
+    """Seed a fresh lab profile; never replace an existing user's preferences."""
+    if tool != 'qucs-s':return
+    target=Path(home)/'.config/qucs/qucs_s.conf'
+    target.parent.mkdir(parents=True,exist_ok=True)
+    try:
+        with target.open('x') as stream:
+            # Qucs-S 26.1.1: simQucsator=8. Explicitly select the image's
+            # bundled RF binary (and adjacent converter) to avoid discovery.
+            stream.write('[General]\nDefaultSimulator=8\nfirstRun=false\n'
+                         'Qucsator=/opt/qucs-s/usr/bin/qucsator_rf\nNgspiceExecutable=ngspice\n')
+    except FileExistsError:
+        pass
+
+
 class Runtime:
     def __init__(self, engine=None):
         self.engine = engine or os.environ.get("PCB_EM_ENGINE", "podman")
@@ -81,11 +96,15 @@ class Runtime:
         if gui:
             gui_home=CACHE/'gui'/Path(command[0]).name/'home'
             gui_home.mkdir(parents=True,exist_ok=True)
+            initialize_gui_settings(Path(command[0]).name,gui_home)
             display = os.environ.get("DISPLAY")
             auth = os.environ.get("XAUTHORITY", str(Path.home() / ".Xauthority"))
             if not display or not Path(auth).is_file():
                 raise WorkflowError("GUI requires DISPLAY and a readable XAUTHORITY cookie file")
-            args += ["--env", f"DISPLAY={display}", "--env", "XAUTHORITY=/tmp/xauthority",
+            # FamilyLocal Xauthority cookies are keyed by hostname. Preserve
+            # that identity inside the container; retain normal cookie checks.
+            args += ["--hostname", os.uname().nodename,
+                     "--env", f"DISPLAY={display}", "--env", "XAUTHORITY=/tmp/xauthority",
                      "--env","LIBGL_ALWAYS_SOFTWARE=1","--env","QT_X11_NO_MITSHM=1",
                      "--env","HOME=/gui-home","--volume",f"{gui_home}:/gui-home:rw",
                      "--volume", "/tmp/.X11-unix:/tmp/.X11-unix:ro",

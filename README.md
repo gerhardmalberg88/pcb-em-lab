@@ -2,13 +2,12 @@
 
 Portable, file-based PCB simulation using KiCad 10, Gmsh and Palace. Board-specific
 inputs live with the hardware; this repository supplies the reusable tooling.
-The companion BMS checkout is `../bms-cmu-bq79616-hardware`.
+The supplied [differential-pair example](examples/differential-pair/README.md)
+runs independently; no hardware checkout is needed.
 
 CPU, tools and CUDA workflows have been exercised on the laptop. See
 [validation status](docs/validation.md) for passed checks and numerical limitations. Generated BMS models are exploratory, and do
 not establish impedance acceptance, EMC compliance or component qualification.
-Track completed work, remaining TODOs and current status in the
-[implementation checklist](docs/TODO.md).
 
 ## Quick start
 
@@ -23,7 +22,26 @@ cd pcb-em-lab
 ./pcb-em bootstrap
 ./pcb-em build --profile cpu --jobs 2
 ./pcb-em doctor --backend cpu --full
-./pcb-em run ../bms-cmu-bq79616-hardware/sim/em/isospi-2d/comh.yaml --backend cpu
+./pcb-em run examples/differential-pair/case.yaml --backend cpu
+# Optional small 3D case: two-port network, fields and circuit handoffs
+./pcb-em run examples/differential-pair/driven.yaml --backend cpu
+```
+
+The example guide includes GUI commands for its PCB, STEP export, constructed
+geometry, mesh, solver inputs and ParaView results. Palace itself uses a JSON
+input and command-line solver; its settings can be edited in a GUI text editor.
+The supplied VS Code workspace adds menu tasks for every stage and GUI launcher.
+Generated files stay under ignored `results/examples/differential-pair/`.
+
+To expose `pcb-em` from another working directory, install it into a local
+virtual environment (requires your distribution's `python3-venv`,
+`python3-setuptools` and `python3-wheel` packages):
+
+```bash
+python3 -m venv --system-site-packages .venv
+. .venv/bin/activate
+python -m pip install --no-build-isolation -e .
+pcb-em run "$PWD/examples/differential-pair/case.yaml" --backend cpu
 ```
 
 CUDA is optional. Install the container integration after confirming that the
@@ -35,13 +53,16 @@ solver checks run afterward through `doctor` in the GPU-enabled runtime.
 ./pcb-em bootstrap --cuda
 ./pcb-em build --profile cuda --cuda-arch 75 --cuda-version 12.9.1
 ./pcb-em doctor --backend cuda --full
-./pcb-em run ../bms-cmu-bq79616-hardware/sim/em/isospi-2d/comh.yaml --backend cuda --mpi-ranks 1
+./pcb-em run examples/differential-pair/case.yaml --backend cuda --mpi-ranks 1
 ./pcb-em build --profile all --cuda-arch 75
 ```
 
 `cpu` builds the CPU solver and shared tools. `cuda` builds the additional solver;
 `all` builds CPU, tools and CUDA. Two build jobs are the default. Failed build
 containers, downloads and logs are retained to diagnose and resume failures.
+An initial source build can take several hours on a laptop; subsequent builds
+reuse matching images and compiled dependencies. See the
+[storage and transfer notes](docs/servers.md) before building or exporting all profiles.
 Completed builders are removed after their image and provenance are saved;
 the image retains the compiled package cache. Images are
 `localhost/pcb-em-{tools,cpu,cuda}:0.1`. Spack environments and exported locks are

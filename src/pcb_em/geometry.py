@@ -182,6 +182,7 @@ def cross_section(board,case,out):
         for key,value in [('InField',distance),('SizeMin',mesh.get('fine_mm',.04)),('SizeMax',mesh.get('coarse_mm',2)),('DistMin',.1),('DistMax',2)]:
             gmsh.model.mesh.field.setNumber(threshold,key,value)
         gmsh.model.mesh.field.setAsBackgroundMesh(threshold)
+        gmsh.write(str(out/'geometry.brep'))
         gmsh.model.mesh.generate(2)
         gmsh.write(str(out/'board.msh'))
         locations=[]

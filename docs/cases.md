@@ -1,5 +1,8 @@
 # Cases and physical assumptions
 
+Start with the self-contained [differential-pair example](../examples/differential-pair/README.md)
+for small 2D/3D cases and GUI instructions.
+
 Meshing defaults to one thread. The pinned Gmsh profile lacks OpenMP, so
 `mesh.threads` must be 1; requesting more fails clearly. This avoids an HXT
 optimization stall observed on the thin layered PCB with two requested threads.
@@ -26,6 +29,12 @@ materials:
 assumptions:
   - Replace material estimates with the manufacturer's characterized stackup.
 ```
+
+Optional `exports: {step: true}` adds a KiCad board/copper STEP preview during
+extraction, without component bodies. It uses the KiCad user origin `0x0mm` and
+millimetres; it is not an input to the solver and its axes differ from the EM
+geometry. The option participates in the extraction cache key. Gmsh exports
+`mesh/geometry.brep` alongside the tagged mesh for both 2D and 3D cases.
 
 The extractor records all enabled copper layers, saved zone fills, tracks/arcs,
 pads, drilled holes, footprint placement, model transforms and rule-area keepouts.

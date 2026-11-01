@@ -7,3 +7,6 @@ build/
 dist/
 results/
 .pytest_cache/
+
+# Local working checklist; not published.
+/docs/TODO.md

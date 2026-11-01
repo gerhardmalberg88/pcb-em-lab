@@ -1,6 +1,7 @@
 {
   "base": "docker.io/library/ubuntu@sha256:24737cef17f4e22b1977df7d9a05e77c4e28b7da5b8911f8d8ccda136bf3573c",
-  "id": "c2dce1744a4bf0b895967f5f0b003498487323514909178771c61dc739d1edc4",
+  "id": "00d1596d86e95bfd54b91b63fcecf2f224b1241490945dbd863c3038a36a605b",
   "image": "localhost/pcb-em-tools:0.1",
-  "inputs": "52281248e260"
+  "inputs": "2243dc35f01a",
+  "runtime_environment": {}
 }

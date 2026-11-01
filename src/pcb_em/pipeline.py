@@ -47,6 +47,9 @@ def load_case(path,mode=None,backend=None,ranks=None,threads=None,gpus=None):
         try:execution[key]=positive(value if value is not None else execution.get(key,default))
         except (ValueError,TypeError) as error:raise WorkflowError(f'execution.{key} must be a positive integer') from error
     case['execution']=execution
+    exports=case.get('exports',{})
+    if not isinstance(exports,dict) or not isinstance(exports.get('step',False),bool):
+        raise WorkflowError('exports.step must be true or false')
     return path,case,board,project,out
 
 
@@ -115,7 +118,9 @@ def run_case(path,*,mode=None,backend=None,ranks=None,threads=None,gpus=None,sta
         for name in required:
             folder=out/name;folder.mkdir(exist_ok=True)
             parameters=dict(current,stage=name,previous=previous)
-            if name=='extract':parameters.pop('physical')
+            if name=='extract':
+                parameters.pop('physical')
+                parameters['exports']=case.get('exports',{})
             shared=['common.py','runtime.py','pipeline.py']
             modules={'extract':['extract.py'],'mesh':['geometry.py','pcb3d.py','magnetics.py','audit.py'],
                      'solve':[],'postprocess':['postprocess.py']}
@@ -146,6 +151,17 @@ def run_case(path,*,mode=None,backend=None,ranks=None,threads=None,gpus=None,sta
                 runtime.run('tools',['/usr/bin/python3','-m','pcb_em.extract',
                     '/project/'+str(board.relative_to(project)),'/work/extract/board.json'],
                     project=project,output=out,log=folder/'stage.log')
+                if case.get('exports',{}).get('step',False):
+                    runtime.run('tools',['kicad-cli','pcb','export','step','--force',
+                        '--no-components','--include-tracks','--include-pads','--include-zones',
+                        '--include-inner-copper','--no-extra-pad-thickness','--user-origin','0x0mm',
+                        '--output','/work/extract/board.step',
+                        '/project/'+str(board.relative_to(project))],
+                        project=project,output=out,log=folder/'stage.log')
+                    write_json(folder/'step-export.json',{
+                        'file':'board.step','units':'mm','origin':'KiCad user origin 0x0mm',
+                        'scope':'KiCad board/copper preview; not the generated EM solver geometry',
+                        'components':False})
             elif name=='mesh':
                 runtime.run('tools',['pcb-python','-m','pcb_em.geometry','/work/extract/board.json',
                     '/work/case.resolved.json','/work/mesh'],project=project,output=out,log=folder/'stage.log')
