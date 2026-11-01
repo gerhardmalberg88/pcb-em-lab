@@ -26,7 +26,7 @@ def write_metrics(location,records):
     write_json(location/'comparison.json',{'metrics':rows,
         'scope':'Successive-value sensitivity, not an acceptance test. For 2D, one voltage-parity candidate must exist; confirm mode continuity from fields.'})
     with (location/'metrics.csv').open('w',newline='') as stream:
-        writer=csv.DictWriter(stream,fieldnames=['parameter','value','metric','result','relative_change_from_previous'])
+        writer=csv.DictWriter(stream,fieldnames=['parameter','value','metric','result','relative_change_from_previous'], lineterminator="\n")
         writer.writeheader();writer.writerows(rows)
 
 

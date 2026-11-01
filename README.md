@@ -1,5 +1,7 @@
 # PCB EM Lab
 
+Supported platform: **Linux**.
+
 Portable, file-based PCB simulation using KiCad 10, Gmsh and Palace. Board-specific
 inputs live with the hardware; this repository supplies the reusable tooling.
 The supplied [differential-pair example](examples/differential-pair/README.md)
